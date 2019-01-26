@@ -39,7 +39,7 @@
 
             if ($type == "buildings") {
 
-                $statement = $pdo->prepare("SELECT * FROM buildings");
+                $statement = $pdo->prepare("SELECT * FROM building");
                 $statement->execute();
                 $results = $statement->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($results);
