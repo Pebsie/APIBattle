@@ -64,6 +64,17 @@
         $query = $pdo->prepare($sql);
         $query->execute();
 
+        // Set up units table
+        echo "<h3>Units</h3>";
+        $sql = "CREATE TABLE units (
+            id NOT NULL AUTO_INCREMENT,
+            amount INT,
+            position INT,
+            owner varchar(255),
+            PRIMARY KEY (id));";
+        $query = $pdo->prepare($sql);
+        $query->execute();
+
         echo "<h2>Content options</h2>";
         echo "<a href='modules/baseBuildings.php'>Click here to install default buildings</a><br />";
         echo "<a href='modules/generateWorld.php'>Click here to populate the world with the default algorithm</a>";
