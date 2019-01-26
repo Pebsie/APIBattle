@@ -107,5 +107,34 @@
 
             }
 
+        } elseif ($a == "build") {
+
+            //
+
+        } elseif ($a == "move") {
+
+            
+
+        } elseif ($a == "login") {
+
+            // login
+
+        } elseif ($a == "register") {
+
+            $username = $_GET['username'];
+            $password = password_hash($_GET['password'],PASSWORD_DEFAULT);
+
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE name='".$username."'");
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$row) { // account doesn't exist
+                
+                $authcode = rand(10000, 99999);
+                $sql = "INSERT INTO player (username, password, authcode, gold, wood, stone, modifier, pop, food) VALUES ('".$username."', '".$password."', '".$authcode."', 10,20,20,1,4,50);";
+                $result = $pdo->query($sql);
+                echo $authcode;
+
+            } else { echo "false"; }
         }
     }
