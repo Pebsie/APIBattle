@@ -66,17 +66,18 @@
         $query->execute();
 
         echo "<h2>Initial buildings</h2>";
-        addBuilding('House', 1, 5, 1, 1, 5, "pop", 1, 1, NULL);
-        addBuilding('Barracks', 3, 10, 5, 5, 10, "unit", 1, 10, "House");
-        addBuilding('Farm', 3, 3, 5, 2, 5, "food", 2, 5, "House");
-
-
         function addBuilding($buildingType, $goldCost, $woodCost, $stoneCost, $timeToBuild, $timeToDeposit, $attribute, $depositValue, $hp, $requirement) {
             $sql = "INSERT INTO buildings (buildingType, goldCost, woodCost, stoneCost, timeToBuild, timeToDeposit, attribute, depositValue, hp, requirement) VALUES ('".$buildingType."', ".$goldCost.", ".$woodCost.", ".$stoneCost.", ".$timeToBuild.", ".$timeToDeposit.", '".$attribute."', ".$depositValue.", ".$hp.", '".$requirement."'));";
             $query = $pdo->prepare($sql);
             $query->execute();
             echo "Added ".$buildingType." <br />";
         }
+        addBuilding('House', 1, 5, 1, 1, 5, "pop", 1, 1, NULL);
+        addBuilding('Barracks', 3, 10, 5, 5, 10, "unit", 1, 10, "House");
+        addBuilding('Farm', 3, 3, 5, 2, 5, "food", 2, 5, "House");
+
+
+    
     } else {
 ?>
     <h1>Setup</h1>
