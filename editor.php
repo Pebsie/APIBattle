@@ -15,7 +15,7 @@
         $query->execute();
         $row = $query->fetch(PDO::FETCH_ASSOC);
         
-        $sql = "INSERT INTO building (buildingType, hp, position, username, special) VALUES ('".$buildingType."', ".$row['hp'].", ".$position.", '".$owner."', '".$special."');";
+        $sql = "UPDATE building SET buildingType='".$buildingType."', special='".$special."' WHERE id=".$position.";";
         $query = $pdo->prepare($sql); 
         $query->execute();
 

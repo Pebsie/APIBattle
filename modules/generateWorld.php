@@ -3,8 +3,10 @@
     require "../editor.php";
 
     for ($i=1; $i <= 100*100; $i++) {
-        build($pdo, "Grass", "Mother Nature", $i, NULL);
-        
+        $sql = "INSERT INTO buildings (buildingType, owner) VALUES ('Grass', 'Mother Nature')";
+        $query = $pdo->prepare($sql);
+        $query->execute();
+
         if (rand(1,10) == 1) {
             build($pdo, "Forest", "Mother Nature", $i, NULL);
         } elseif (rand(1,250) == 1) {

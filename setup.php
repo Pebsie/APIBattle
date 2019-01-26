@@ -39,7 +39,6 @@
             id int NOT NULL AUTO_INCREMENT,
             buildingType varchar(255) NOT NULL,
             hp int,
-            position int,
             username varchar(255) NOT NULL,
             special text,
             PRIMARY KEY (id));";
@@ -60,17 +59,6 @@
             depositValue INT,
             hp INT,
             requirement varchar(255),
-            PRIMARY KEY (id));";
-        $query = $pdo->prepare($sql);
-        $query->execute();
-
-        // Set up units table
-        echo "<h3>Units</h3>";
-        $sql = "CREATE TABLE units (
-            id NOT NULL AUTO_INCREMENT,
-            amount INT,
-            position INT,
-            owner varchar(255),
             PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
         $query->execute();

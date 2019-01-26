@@ -19,7 +19,7 @@
                             buildable - returns in json format the data on all buildings the player can currently build (example ?a=get&scope=player&type=buildable*authcode=*authcode*)
             build - relates to the building of structures
                 authcode
-                type, position - attempts to build building type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&authcode=*authcode*)
+                type, position - attempts to build building type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&position=*position&authcode=*authcode*)
             move - relates to the moving of units
                 authcode
                 position, number, newPosition - attempts to move number units from position position to new position newPosition. Returns 'true' if movement was successful and 'false' if unable to move. If enemies are on tile will return battle,*numberOfUnitsKilled*,*numberOfUnitsLost*(example ?a=move&position=*position*&number=*numberOfUnits*&newPosition=*newPosition*)
@@ -110,7 +110,11 @@
 
     } elseif ($a == "build") {
 
-        //
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE ");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) { // account doesn't exist
 
     } elseif ($a == "move") {
 
