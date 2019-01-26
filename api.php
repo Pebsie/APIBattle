@@ -106,35 +106,37 @@
                 echo json_encode($finalResult);
 
             }
+        }
 
-        } elseif ($a == "build") {
+    } elseif ($a == "build") {
 
-            //
+        //
 
-        } elseif ($a == "move") {
+    } elseif ($a == "move") {
 
             
 
-        } elseif ($a == "login") {
+    } elseif ($a == "login") {
 
-            // login
+        // login
 
-        } elseif ($a == "register") {
+    } elseif ($a == "register") {
 
-            $username = $_GET['username'];
-            $password = password_hash($_GET['password'],PASSWORD_DEFAULT);
+        $username = $_GET['username'];
+        $password = password_hash($_GET['password'],PASSWORD_DEFAULT);
 
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE name='".$username."'");
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE name='".$username."'");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$row) { // account doesn't exist
-                
-                $authcode = rand(10000, 99999);
-                $sql = "INSERT INTO player (username, password, authcode, gold, wood, stone, modifier, pop, food) VALUES ('".$username."', '".$password."', '".$authcode."', 10,20,20,1,4,50);";
-                $result = $pdo->query($sql);
-                echo $authcode;
+        if (!$row) { // account doesn't exist
 
-            } else { echo "false"; }
-        }
+            $authcode = rand(10000, 99999);
+            $sql = "INSERT INTO player (username, password, authcode, gold, wood, stone, modifier, pop, food) VALUES ('".$username."', '".$password."', '".$authcode."', 10,20,20,1,4,50);";
+            echo $sql;
+            $query = $pdo->prepare($sql);
+            $result = $pdo->query($query);
+            echo $authcode;
+
+        } else { echo "false"; }
     }
