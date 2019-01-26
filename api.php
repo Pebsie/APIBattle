@@ -37,21 +37,10 @@
 
         if ($scope == "world") {
 
-            if ($type == "buildings") {
-
-                $statement = $pdo->prepare("SELECT * FROM world");
-                $statement->execute();
-                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($results);
-
-            } elseif ($type == "units") {
-
-                $statement = $pdo->prepare("SELECT * FROM units");
-                $statement->execute();
-                $results = $statement->fetchAll(PDO::FECTH_ASSOC);
-                echo json_encode($results);
-            
-            }
+            $statement = $pdo->prepare("SELECT * FROM world");
+            $statement->execute();
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($results);
 
         } elseif ($scope == "player") {
 
