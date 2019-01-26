@@ -41,9 +41,7 @@
             position int,
             username varchar(255) NOT NULL,
             special text,
-            PRIMARY KEY (id),
-            FOREIGN KEY (buildingType) REFERENCES buildings(buildingType),
-            FOREIGN KEY (username) REFERENCES player(owner));";
+            PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
         $query->execute();
 

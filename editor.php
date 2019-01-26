@@ -13,11 +13,14 @@
         $sql = "SELECT * FROM buildings WHERE buildingType='".$buildingType."'";
         $query = $pdo->prepare($sql);
         $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
+        $row = $query->fetch(PDO::FETCH_ASSOC);
         
         $sql = "INSERT INTO building (buildingType, hp, position, username, special) VALUES ('".$buildingType."', ".$row['hp'].", ".$position.", '".$owner."', '".$special."');";
-        $query = $pdo->prepare($sql);
+        $query = $pdo->prepare($sql); 
         $query->execute();
+
+
+        echo "Built ".$buildingType." at position ".$position." (owned by ".$owner.") (".$sql.")";
     }
 
 ?>

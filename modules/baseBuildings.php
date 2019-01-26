@@ -1,6 +1,6 @@
 <?php
-    require "connect.php";
-    require "editor.php";
+    require "../connect.php";
+    require "../editor.php";
     addBuilding($pdo, 'House', 1, 5, 1, 1, 5, "pop", 1, 1, NULL);
     addBuilding($pdo, 'Barracks', 3, 10, 5, 5, 10, "unit", 1, 10, "House");
     addBuilding($pdo, 'Farm', 3, 3, 5, 2, 5, "food", 2, 5, "House");
