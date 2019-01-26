@@ -115,6 +115,7 @@
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$row) { // account doesn't exist
+        }
 
     } elseif ($a == "move") {
 
