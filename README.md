@@ -26,3 +26,6 @@ Whenever you make an interaction that modifies the gameworld you'll _need_ to se
 `api.php?a=get&scope=player&type=data&authcode=*authcode*` will return in JSON format all player stats (username, authcode, gold, wood, stone, modifier, pop, food)
 
 `api.php?a=get&scope=player&type=buildable&authcode=*authcode*` will return in JSON format a list of all buildings that the player (specified by authcode) has the ability to build (some buildings require others existing to build, E.G barracks first requires you own a house).
+
+## Offical server
+The official server is hosted at http://freshplay.co.uk/b/api.php
