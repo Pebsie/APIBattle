@@ -2,8 +2,9 @@
     require "../connect.php";
     require "../editor.php";
 
+    echo "Generating world... ";
     for ($i=1; $i <= 100*100; $i++) {
-        $sql = "INSERT INTO world (buildingType, owner) VALUES ('Grass', 'Mother Nature');";
+        $sql = "INSERT INTO world (buildingType, username) VALUES ('Grass', 'Mother Nature');";
         $query = $pdo->prepare($sql);
         $query->execute();
 
@@ -14,4 +15,6 @@
         }
 
     }
+
+    echo "done.";
 ?>
