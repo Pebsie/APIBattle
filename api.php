@@ -61,14 +61,14 @@
 
                 $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
                 $statement->execute();
-                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $results = $statement->fetch(PDO::FETCH_ASSOC);
                 echo json_encode($results);
                 
             } elseif ($type == "buildable") {
 
                 $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
                 $statement->execute();
-                $pl = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $pl = $statement->fetch(PDO::FETCH_ASSOC);
 
                 $statement = $pdo->prepare("SELECT * FROM buildings");
                 $statement->execute();
@@ -125,7 +125,7 @@
         $username = $_GET['username'];
         $password = password_hash($_GET['password'],PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE name='".$username."'");
+        $stmt = $pdo->prepare("SELECT * FROM player WHERE username='".$username."'");
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -133,9 +133,8 @@
 
             $authcode = rand(10000, 99999);
             $sql = "INSERT INTO player (username, password, authcode, gold, wood, stone, modifier, pop, food) VALUES ('".$username."', '".$password."', '".$authcode."', 10,20,20,1,4,50);";
-            echo $sql;
             $query = $pdo->prepare($sql);
-            $result = $pdo->query($query);
+            $result = $query->execute();
             echo $authcode;
 
         } else { echo "false"; }

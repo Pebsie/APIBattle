@@ -64,10 +64,11 @@
         $query = $pdo->prepare($sql);
         $query->execute();
 
-        echo "<h2>Initial buildings</h2>";
-        require "modules/baseBuildings.php";
+        echo "<h2>Content options</h2>";
+        echo "<a href='modules/baseBuildings.php'>Click here to install default buildings</a><br />";
+        echo "<a href='modules/generateWorld.php'>Click here to populate the world with the default algorithm</a>";
 
-    
+        echo "<p><em>You don't have to use the default buildings and world generation algorithm! Feel free to create your own. You can see how all of this works <a href='https://github.com/pebsie/apibattle'>on GitHub.</a></p>";
     } else {
 ?>
     <h1>Setup</h1>
