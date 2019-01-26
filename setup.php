@@ -83,10 +83,10 @@
     <h2>Please enter database details</h2>
     
     <form type="POST" action="setup.php">
-        <input type="text" name="username" default="mysql_username" /> <br />
-        <input type="password" name="password" default="password" /> <br />
-        <input type="text" name="server" default="mysql_server" /> <br />
-        <input type="text" name="dbname" default="mysql_dbname" /> <br />
+        Username: <input type="text" name="username" default="mysql_username" /> <br />
+        Password: <input type="password" name="password" default="password" /> <br />
+        Server address: <input type="text" name="server" default="mysql_server" /> <br />
+        Database name: <input type="text" name="dbname" default="mysql_dbname" /> <br />
         <input type="submit" value="Install" /> <br />
     </form>
     <? } ?>
