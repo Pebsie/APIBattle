@@ -9,4 +9,15 @@
         echo "Added ".$buildingType." <br />";
     }
 
+    function build($pdo, $buildingType, $owner, $position, $special) {
+        $sql = "SELECT * FROM buildings WHERE buildingType='".$buildingType."'";
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        
+        $sql = "INSERT INTO building (buildingType, hp, position, username, special) VALUES ('".$buildingType."', ".$row['hp'].", ".$position.", '".$owner."', '".$special."'));";
+        $query = $pdo->prepare($sql);
+        $query->execute();
+    }
+
 ?>
