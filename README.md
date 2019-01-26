@@ -14,11 +14,15 @@ Setup a MySQL database and clone this repository to your webserver. Run setup.ph
 All interaction from here on should be with wherver `api.php` is stored on your webserver. The following is available to you:
 #### Registration & Logging in
 `api.php?a=login&username=*username*&password=*password` will return either the authcode of the registered account or `false`.
+
 `api.php?a=register&username=*username*&password=*password` will attempt to register a new user. Will return either the authcode of the newly registered account or `false`.
 
 Whenever you make an interaction that modifies the gameworld you'll _need_ to send the authcode too. The authcode is what the server uses to identify the user making the modification.
+
 #### Retrieving world data
 `api.php?a=get&scope=world&type=buildings` will give you a list in JSON format of all the buildings currently existing in the gameworld with position, owner and HP information. The gameworld should be a 100x100 grid with the top left most tile being position 1 and the bottom right being position 10000.
+
 #### Retrieving player data
 `api.php?a=get&scope=player&type=data&authcode=*authcode*` will return in JSON format all player stats (username, authcode, gold, wood, stone, modifier, pop, food)
+
 `api.php?a=get&scope=player&type=buildable&authcode=*authcode*` will return in JSON format a list of all buildings that the player (specified by authcode) has the ability to build (some buildings require others existing to build, E.G barracks first requires you own a house).
