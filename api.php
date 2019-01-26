@@ -76,7 +76,7 @@
 
                 $finalResult = array();
 
-                foreach ($row as $results) {
+                foreach ($results as $row) {
                     $canBuild = false;
 
                     if ($row['requirement'] != NULL) {
