@@ -118,7 +118,16 @@
 
     } elseif ($a == "login") {
 
-        // login
+        $username = $_GET['username'];
+        $stmt = $pdo->prepare("SELECT * FROM player WHERE username='".$username."'");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (password_verify($_GET['password'], $result['password'])) {
+            echo $result['authcode'];
+        } else {
+            echo "false";
+        }
 
     } elseif ($a == "register") {
 
