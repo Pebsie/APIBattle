@@ -19,7 +19,6 @@
         $query = $pdo->prepare($sql); 
         $query->execute();
 
-
         echo "Built ".$buildingType." at position ".$position." (owned by ".$owner.") (".$sql.")";
     }
 

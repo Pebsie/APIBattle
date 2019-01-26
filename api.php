@@ -50,6 +50,60 @@
                 $statement->execute();
                 $results = $statement->fetchAll(PDO::FECTH_ASSOC);
                 echo json_encode($results);
+            
+            }
+
+        } elseif ($scope == "player") {
+
+            $authcode = $_GET['authcode'];
+            
+            if ($type == "data") {
+
+                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+                $statement->execute();
+                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($results);
+                
+            } elseif ($type == "buildable") {
+
+                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+                $statement->execute();
+                $pl = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                $statement = $pdo->prepare("SELECT * FROM buildings");
+                $statement->execute();
+                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                $finalResult = array();
+
+                foreach ($row as $results) {
+                    $canBuild = false;
+
+                    if ($row['requirement'] != NULL) {
+
+                        $statement = $pdo->prepare("SELECT * FROM building WHERE username='".$pl['username']."' AND buildingType='".$row['requirement']."';");
+                        $statement->execute();
+                        $thisResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                        if ($thisResult) {
+                            $canBuild = true;
+                        }
+                        
+                    } else {
+
+                        $canBuild = true;
+
+                    }
+
+                    if ($canBuild) {
+
+                        array_push( $finalResult, $row );
+
+                    }
+
+                }
+
+                echo json_encode($finalResult);
 
             }
 

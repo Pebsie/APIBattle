@@ -22,6 +22,7 @@
             id int NOT NULL AUTO_INCREMENT,
             username varchar(255) NOT NULL,
             password varchar(255),
+            authcode varchar(255),
             gold int,
             wood int,
             stone int,
