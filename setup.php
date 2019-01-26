@@ -82,7 +82,7 @@
     <h1>Setup</h1>
     <h2>Please enter database details</h2>
     
-    <form type="POST" action="setup.php">
+    <form method="POST" action="setup.php">
         Username: <input type="text" name="username" default="mysql_username" /> <br />
         Password: <input type="password" name="password" default="password" /> <br />
         Server address: <input type="text" name="server" default="mysql_server" /> <br />
