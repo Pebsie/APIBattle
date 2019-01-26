@@ -34,8 +34,8 @@
         $query->execute();
 
         // Set up buildings table
-        echo "<h3>Building</h3>";
-        $sql = "CREATE TABLE building (
+        echo "<h3>world</h3>";
+        $sql = "CREATE TABLE world (
             id int NOT NULL AUTO_INCREMENT,
             buildingType varchar(255) NOT NULL,
             hp int,
@@ -45,7 +45,7 @@
         $query = $pdo->prepare($sql);
         $query->execute();
 
-        // Set up building table
+        // Set up world table
         echo "<h3>Buildings</h3>";
         $sql = "CREATE TABLE buildings (
             id int NOT NULL AUTO_INCREMENT,

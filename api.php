@@ -17,9 +17,9 @@
                         type
                             data - returns in json format all current attributes of the player (example ?a=get&scope=player&type=data&authcode=*authcode*)
                             buildable - returns in json format the data on all buildings the player can currently build (example ?a=get&scope=player&type=buildable*authcode=*authcode*)
-            build - relates to the building of structures
+            build - relates to the world of structures
                 authcode
-                type, position - attempts to build building type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&position=*position&authcode=*authcode*)
+                type, position - attempts to build world type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&position=*position&authcode=*authcode*)
             move - relates to the moving of units
                 authcode
                 position, number, newPosition - attempts to move number units from position position to new position newPosition. Returns 'true' if movement was successful and 'false' if unable to move. If enemies are on tile will return battle,*numberOfUnitsKilled*,*numberOfUnitsLost*(example ?a=move&position=*position*&number=*numberOfUnits*&newPosition=*newPosition*)
@@ -39,7 +39,7 @@
 
             if ($type == "buildings") {
 
-                $statement = $pdo->prepare("SELECT * FROM building");
+                $statement = $pdo->prepare("SELECT * FROM world");
                 $statement->execute();
                 $results = $statement->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($results);
@@ -81,7 +81,7 @@
 
                     if ($row['requirement'] != NULL) {
 
-                        $statement = $pdo->prepare("SELECT * FROM building WHERE username='".$pl['username']."' AND buildingType='".$row['requirement']."';");
+                        $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl['username']."' AND buildingType='".$row['requirement']."';");
                         $statement->execute();
                         $thisResult = $statement->fetchAll(PDO::FETCH_ASSOC);
 

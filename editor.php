@@ -10,12 +10,8 @@
     }
 
     function build($pdo, $buildingType, $owner, $position, $special) {
-        $sql = "SELECT * FROM buildings WHERE buildingType='".$buildingType."'";
-        $query = $pdo->prepare($sql);
-        $query->execute();
-        $row = $query->fetch(PDO::FETCH_ASSOC);
         
-        $sql = "UPDATE building SET buildingType='".$buildingType."', special='".$special."' WHERE id=".$position.";";
+        $sql = "UPDATE world SET buildingType='".$buildingType."', special='".$special."' WHERE id=".$position.";";
         $query = $pdo->prepare($sql); 
         $query->execute();
 

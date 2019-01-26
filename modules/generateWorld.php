@@ -3,7 +3,7 @@
     require "../editor.php";
 
     for ($i=1; $i <= 100*100; $i++) {
-        $sql = "INSERT INTO buildings (buildingType, owner) VALUES ('Grass', 'Mother Nature')";
+        $sql = "INSERT INTO buildings (buildingType, owner) VALUES ('Grass', 'Mother Nature');";
         $query = $pdo->prepare($sql);
         $query->execute();
 
