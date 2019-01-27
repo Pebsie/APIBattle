@@ -35,7 +35,7 @@
         $query->execute();       
 
         // Set up buildings table
-        echo "<h3>world</h3>";
+        echo "<h3>World</h3>";
         $sql = "CREATE TABLE world (
             id int NOT NULL AUTO_INCREMENT,
             buildingType varchar(255) NOT NULL,

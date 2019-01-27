@@ -138,7 +138,48 @@
 
     } elseif ($a == "move") {
 
-        //
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["position"].";");
+        $stmt->execute();
+        $tile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $authcode = $_GET['authcode'];
+        $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+        $statement->execute();
+        $pl = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["newPosition"].";");
+        $stmt->execute();
+        $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $number = $_GET['number'];
+        if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
+
+        if ($tile['username'] == $pl['username']) {
+            if ($newTile['username'] == "Mother Nature") {
+                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                $stmt->execute();
+
+                $stmt = $pdo->prepare("UPDATE world SET units=".$number.", owner='".$pl['username']."' WHERE id=".$newTile['id']);
+                $stmt->execute();
+            } elseif ($newTile['username'] == $tile['username']) {
+                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                $stmt->execute();
+
+                $stmt = $pdo->prepare("UPDATE world SET units=".$number." WHERE id=".$newTile['id']);
+                $stmt->execute();
+            } else { // this is a battle
+                $atk = rand(1, $newTile['units']);
+                $def = rand(1, $tile['units']);
+                $tile['units'] -= $atk;
+                $newTile['units'] -= $def;
+                echo $atk.",".$def;
+                if ($newTile['units'] < 0) {
+                    $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+                    $stmt->execute();
+                }
+            
+            }
+        }
 
     } elseif ($a == "login") {
 

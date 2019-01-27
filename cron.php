@@ -69,7 +69,7 @@
 
         $newFood = $row['food']-$row['pop'];
         if ($newFood < 0) {
-            $row['pop']-=$newFood;
+            $row['pop']-= abs($newFood);
             $newFood = 0;
         }
         $newGold = floor($row['gold']+$row['pop']*0.2);
