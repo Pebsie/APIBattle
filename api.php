@@ -129,8 +129,10 @@
                     }
                 }
             } else {
-                if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username']) {
+                if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
                     build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
+                    $stmt->execute();
                     echo "true";
                 }
             }
@@ -152,6 +154,7 @@
         $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $number = $_GET['number'];
+        echo $number;
         if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
         if ($tile['username'] == $pl['username']) {
@@ -159,11 +162,14 @@
                 $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                 $stmt->execute();
 
-                $stmt = $pdo->prepare("UPDATE world SET units=".$number.", owner='".$pl['username']."' WHERE id=".$newTile['id']);
+                $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
                 $stmt->execute();
             } elseif ($newTile['username'] == $tile['username']) {
                 $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                 $stmt->execute();
+
+               
+        
 
                 $stmt = $pdo->prepare("UPDATE world SET units=".$number." WHERE id=".$newTile['id']);
                 $stmt->execute();
