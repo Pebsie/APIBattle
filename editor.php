@@ -9,17 +9,17 @@
         echo "Added ".$buildingType." <br />";
     }
 
-    function build($pdo, $buildingType, $owner, $position, $special) {
-        $sql = "SELECT * FROM buildings WHERE buildingType='".$buildingType."'";
-        $query = $pdo->prepare($sql);
-        $query->execute();
-        $row = $query->fetch(PDO::FETCH_ASSOC);
+    function build($pdo, $buildingType, $owner, $position, $special, $units) {
         
-        $sql = "INSERT INTO building (buildingType, hp, position, username, special) VALUES ('".$buildingType."', ".$row['hp'].", ".$position.", '".$owner."', '".$special."');";
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$position.";");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "UPDATE world SET buildingType='".$buildingType."', username='".$owner."', units=".($row['units'] + $units).", special='".$special."' WHERE id=".$position.";";
         $query = $pdo->prepare($sql); 
         $query->execute();
 
-        echo "Built ".$buildingType." at position ".$position." (owned by ".$owner.").";
+       // echo "Built ".$buildingType." at position ".$position." (owned by ".$owner.").";
     }
 
 ?>

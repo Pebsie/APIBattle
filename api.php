@@ -1,6 +1,6 @@
 <?php
     require "connect.php";
-
+    require "editor.php";
     /*
     apiBattle API - The meat & bones
 
@@ -17,9 +17,9 @@
                         type
                             data - returns in json format all current attributes of the player (example ?a=get&scope=player&type=data&authcode=*authcode*)
                             buildable - returns in json format the data on all buildings the player can currently build (example ?a=get&scope=player&type=buildable*authcode=*authcode*)
-            build - relates to the building of structures
+            build - relates to the world of structures
                 authcode
-                type, position - attempts to build building type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&authcode=*authcode*)
+                type, position - attempts to build world type at position position. Returns 'true' if built and 'false' if unable to build (example ?a=build&type=*buildingType*&position=*position&authcode=*authcode*)
             move - relates to the moving of units
                 authcode
                 position, number, newPosition - attempts to move number units from position position to new position newPosition. Returns 'true' if movement was successful and 'false' if unable to move. If enemies are on tile will return battle,*numberOfUnitsKilled*,*numberOfUnitsLost*(example ?a=move&position=*position*&number=*numberOfUnits*&newPosition=*newPosition*)
@@ -37,25 +37,17 @@
 
         if ($scope == "world") {
 
-            if ($type == "buildings") {
-
-                $statement = $pdo->prepare("SELECT * FROM building");
-                $statement->execute();
-                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($results);
-
-            } elseif ($type == "units") {
-
-                $statement = $pdo->prepare("SELECT * FROM units");
-                $statement->execute();
-                $results = $statement->fetchAll(PDO::FECTH_ASSOC);
-                echo json_encode($results);
-            
-            }
+            $statement = $pdo->prepare("SELECT * FROM world");
+            $statement->execute();
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($results);
 
         } elseif ($scope == "player") {
 
             $authcode = $_GET['authcode'];
+            $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+            $statement->execute();
+            $pl = $statement->fetch(PDO::FETCH_ASSOC);
             
             if ($type == "data") {
 
@@ -65,10 +57,6 @@
                 echo json_encode($results);
                 
             } elseif ($type == "buildable") {
-
-                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
-                $statement->execute();
-                $pl = $statement->fetch(PDO::FETCH_ASSOC);
 
                 $statement = $pdo->prepare("SELECT * FROM buildings");
                 $statement->execute();
@@ -81,7 +69,7 @@
 
                     if ($row['requirement'] != NULL) {
 
-                        $statement = $pdo->prepare("SELECT * FROM building WHERE username='".$pl['username']."' AND buildingType='".$row['requirement']."';");
+                        $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl['username']."' AND buildingType='".$row['requirement']."';");
                         $statement->execute();
                         $thisResult = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -105,16 +93,107 @@
 
                 echo json_encode($finalResult);
 
+            } elseif ($type == "buildingSum") {
+
+                $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl["username"]."';");
+                $statement->execute();
+                echo $statement->rowCount();
+                
             }
         }
 
     } elseif ($a == "build") {
 
-        //
+        $authcode = $_GET['authcode'];
+        $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+        $statement->execute();
+        $pl = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$_GET["type"]."';");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["position"].";");
+        $stmt->execute();
+        $tile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {  // this building type is valid
+            if ($_GET['type'] == "Castle") {
+
+                $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl["username"]."';");
+                $statement->execute();
+                if ($statement->rowCount() == 0) {
+                    if ($tile['buildingType'] == "Grass" && $tile['username'] == "Mother Nature") {
+                        build($pdo, "Castle", $pl['username'], $_GET['position'], "", 25);
+                        echo "true";
+                    }
+                }
+            } else {
+                if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
+                    build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
+                    $stmt->execute();
+                    echo "true";
+                }
+            }
+        }
 
     } elseif ($a == "move") {
 
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["position"].";");
+        $stmt->execute();
+        $tile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $authcode = $_GET['authcode'];
+        $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+        $statement->execute();
+        $pl = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["newPosition"].";");
+        $stmt->execute();
+        $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $number = $_GET['number'];
+        echo $number;
+        if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
+
+        if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
+            if ($newTile['username'] == "Mother Nature") {
+                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                $stmt->execute();
+
+                $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
+                $stmt->execute();
+            } elseif ($newTile['username'] == $tile['username']) {
+                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                $stmt->execute();
+        
+                $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
+                $stmt->execute();
+            } else { // this is a battle
+                $atk = rand(1, $newTile['units']);
+                $def = rand(1, $tile['units']);
+                $tile['units'] -= $atk;
+                $newTile['units'] -= $def;
+                echo $atk.",".$def;
+
+                $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
+                $stmt->execute();
+
+                if ($newTile['units'] < 0) {
+                    $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+                    $stmt->execute();
+                } else {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+                    $stmt->execute();
+                }
+
+                
+
+
             
+            }
+        }
 
     } elseif ($a == "login") {
 

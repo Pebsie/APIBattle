@@ -8,6 +8,7 @@
         $mysql_password = "'.$_POST["password"].'";
         $mysql_server = "'.$_POST["server"].'";
         $mysql_dbname = "'.$_POST['dbname'].'";
+        $cron_verify = "'.rand(100000,999999).'";
         ?>';
         fwrite( $authFile, $authWrite );
 
@@ -31,22 +32,21 @@
             food int,
             PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
-        $query->execute();
+        $query->execute();       
 
         // Set up buildings table
-        echo "<h3>Building</h3>";
-        $sql = "CREATE TABLE building (
+        echo "<h3>World</h3>";
+        $sql = "CREATE TABLE world (
             id int NOT NULL AUTO_INCREMENT,
             buildingType varchar(255) NOT NULL,
-            hp int,
-            position int,
+            units int,
             username varchar(255) NOT NULL,
             special text,
             PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
         $query->execute();
 
-        // Set up building table
+        // Set up world table
         echo "<h3>Buildings</h3>";
         $sql = "CREATE TABLE buildings (
             id int NOT NULL AUTO_INCREMENT,
