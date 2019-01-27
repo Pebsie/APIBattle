@@ -1,13 +1,16 @@
 <?php
     require "connect.php";
+    require "editor.php";
 
     $sql = "SELECT * FROM world";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    foreach ($rows as $row) {
 
+        // echo "Tile #".$row['id']." (owned by ".$row['username']." with ".$row['units']." stationed soldiers) ";
         $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$row["buildingType"]."';");
         $stmt->execute();
         $buildingData = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -18,17 +21,19 @@
 
 
         if ($row['buildingType'] == "Building") {
-            $data = explode(",", $row['special']);
-            $time = (int) $data[1];
+            $data = explode(',', $row['special']);
+            $time = (int) $data[0];
+
             $time--;
+            // echo "is building a ".$data[1]." and will be complete in ".$time." cycles. ";
             if ($time < 1) {
 
-                require "editor.php";
-                build($pdo, $data[2], $row['username'], $row['id'], "", 1);
+                build($pdo, $data[1], $row['username'], $row['id'], "", 1);
+                // echo "Construction is complete!";
 
             } else {
 
-                build($pdo, "Building", $row['username'], $row['id'], $time.",".$data[2], 0);
+                build($pdo, "Building", $row['username'], $row['id'], $time.",".$data[1], 0);
 
             }
 
@@ -49,14 +54,18 @@
 
         }
 
+        // echo "<br />";
+
     }
 
     $sql = "SELECT * FROM player";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    foreach ($rows as $row) {
+
 
         $newFood = $row['food']-$row['pop'];
         if ($newFood < 0) {
