@@ -38,7 +38,7 @@
         $sql = "CREATE TABLE world (
             id int NOT NULL AUTO_INCREMENT,
             buildingType varchar(255) NOT NULL,
-            hp int,
+            units int,
             username varchar(255) NOT NULL,
             special text,
             PRIMARY KEY (id));";

@@ -45,6 +45,9 @@
         } elseif ($scope == "player") {
 
             $authcode = $_GET['authcode'];
+            $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+            $statement->execute();
+            $pl = $statement->fetch(PDO::FETCH_ASSOC);
             
             if ($type == "data") {
 
@@ -54,10 +57,6 @@
                 echo json_encode($results);
                 
             } elseif ($type == "buildable") {
-
-                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
-                $statement->execute();
-                $pl = $statement->fetch(PDO::FETCH_ASSOC);
 
                 $statement = $pdo->prepare("SELECT * FROM buildings");
                 $statement->execute();
@@ -94,6 +93,12 @@
 
                 echo json_encode($finalResult);
 
+            } elseif ($type == "buildingSum") {
+
+                $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl["username"]."';");
+                $statement->execute();
+                echo $statement->rowCount();
+                
             }
         }
 
