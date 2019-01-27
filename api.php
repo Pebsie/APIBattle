@@ -124,13 +124,14 @@
                 $statement->execute();
                 if ($statement->rowCount() == 0) {
                     if ($tile['buildingType'] == "Grass" && $tile['username'] == "Mother Nature") {
-                        build($pdo, "Castle", $pl['username'], $_GET['position'], "", 0);
+                        build($pdo, "Castle", $pl['username'], $_GET['position'], "", 25);
                         echo "true";
                     }
                 }
             } else {
                 if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username']) {
                     build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    echo "true";
                 }
             }
         }
