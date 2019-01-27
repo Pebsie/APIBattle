@@ -167,11 +167,8 @@
             } elseif ($newTile['username'] == $tile['username']) {
                 $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                 $stmt->execute();
-
-               
         
-
-                $stmt = $pdo->prepare("UPDATE world SET units=".$number." WHERE id=".$newTile['id']);
+                $stmt = $pdo->prepare("UPDATE world SET units+=".$number." WHERE id=".$newTile['id']);
                 $stmt->execute();
             } else { // this is a battle
                 $atk = rand(1, $newTile['units']);
