@@ -157,7 +157,7 @@
         echo $number;
         if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
-        if ($tile['username'] == $pl['username']) {
+        if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
             if ($newTile['username'] == "Mother Nature") {
                 $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                 $stmt->execute();
