@@ -176,10 +176,21 @@
                 $tile['units'] -= $atk;
                 $newTile['units'] -= $def;
                 echo $atk.",".$def;
+
+                $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
+                $stmt->execute();
+
                 if ($newTile['units'] < 0) {
                     $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
                     $stmt->execute();
+                } else {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+                    $stmt->execute();
                 }
+
+                
+
+
             
             }
         }
