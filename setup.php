@@ -8,6 +8,7 @@
         $mysql_password = "'.$_POST["password"].'";
         $mysql_server = "'.$_POST["server"].'";
         $mysql_dbname = "'.$_POST['dbname'].'";
+        $cron_verify = "'.rand(100000,999999).'";
         ?>';
         fwrite( $authFile, $authWrite );
 
@@ -31,7 +32,7 @@
             food int,
             PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
-        $query->execute();
+        $query->execute();       
 
         // Set up buildings table
         echo "<h3>world</h3>";

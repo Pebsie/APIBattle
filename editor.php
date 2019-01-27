@@ -9,9 +9,13 @@
         echo "Added ".$buildingType." <br />";
     }
 
-    function build($pdo, $buildingType, $owner, $position, $special) {
+    function build($pdo, $buildingType, $owner, $position, $special, $units) {
         
-        $sql = "UPDATE world SET buildingType='".$buildingType."', special='".$special."' WHERE id=".$position.";";
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$position.";");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "UPDATE world SET buildingType='".$buildingType."', username='".$owner."', units=".($row['units'] + $units).", special='".$special."' WHERE id=".$position.";";
         $query = $pdo->prepare($sql); 
         $query->execute();
 

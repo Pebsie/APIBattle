@@ -1,6 +1,6 @@
 <?php
     require "connect.php";
-
+    require "editor.php";
     /*
     apiBattle API - The meat & bones
 
@@ -104,11 +104,35 @@
 
     } elseif ($a == "build") {
 
-        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE ");
+        $authcode = $_GET['authcode'];
+        $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+        $statement->execute();
+        $pl = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$_GET["type"]."';");
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$row) { // account doesn't exist
+        $stmt = $pdo->prepare("SELECT * FROM world WHERE id=".$_GET["position"].";");
+        $stmt->execute();
+        $tile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {  // this building type is valid
+            if ($_GET['type'] == "Castle") {
+
+                $statement = $pdo->prepare("SELECT * FROM world WHERE username='".$pl["username"]."';");
+                $statement->execute();
+                if ($statement->rowCount() == 0) {
+                    if ($tile['buildingType'] == "Grass" && $tile['username'] == "Mother Nature") {
+                        build($pdo, "Castle", $pl['username'], $_GET['position'], "", 0);
+                        echo "true";
+                    }
+                }
+            } else {
+                if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username']) {
+                    build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                }
+            }
         }
 
     } elseif ($a == "move") {
