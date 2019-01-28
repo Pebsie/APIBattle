@@ -10,6 +10,8 @@ This is the answer to that problem. This is a recreation of the base game with s
 ### Setup
 Setup a MySQL database and clone this repository to your webserver. Run setup.php and fill in your database's credentials, then press 'Install'. The tables will set themselves up after which you'll be given the option of populating with the default buildings and world generation algorithm. You don't have to use these but you do need to use _something_. At the very least you'll want to populate 'world' with 10,000 fields with some kind of default buildingType (for example "Grass").
 
+Set cron.php to run frequently. The default content packs are balanced for this running once a minute. **(Note that this is cycling through all world tiles and all players every time it is run. This _shouldn't_ be an issue, but you're making at least 30,000 requests to the database.)** 
+
 ### Interacting with the database
 All interaction from here on should be with wherver `api.php` is stored on your webserver. The following is available to you:
 #### Registration & Logging in
