@@ -47,7 +47,8 @@
                     $stmt->execute();
                 }
             } else {
-                $sql = "UPDATE player SET ".$buildingData['attribute']."+=".$buildingData['depositValue']." WHERE username='".$row['username']."';";
+                $sql = "UPDATE player SET ".$buildingData['attribute']."=".($pl[$buildingData['attribute']]+$buildingData['depositValue'])." WHERE username='".$row['username']."';";
+                echo $sql;
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
             }

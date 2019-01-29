@@ -171,11 +171,12 @@
                 $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
                 $stmt->execute();
             } else { // this is a battle
-                $atk = rand(1, $newTile['units']);
-                $def = rand(1, $tile['units']);
+                $atk = rand(0, $newTile['units']); // number of units the attacker has lost
+                $def = rand(0, $number); // number of units the defender has lost
+                echo $atk.",".$def.",".$tile['units'].",".$newTile['units'];
                 $tile['units'] -= $atk;
                 $newTile['units'] -= $def;
-                echo $atk.",".$def;
+                
 
                 $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
                 $stmt->execute();
