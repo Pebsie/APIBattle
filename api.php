@@ -154,7 +154,7 @@
         $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $number = $_GET['number'];
-        echo $number;
+
         if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
         if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
