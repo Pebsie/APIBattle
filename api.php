@@ -171,8 +171,18 @@
                 $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
                 $stmt->execute();
             } else { // this is a battle
-                $atk = rand(0, $newTile['units']); // number of units the attacker has lost
-                $def = rand(0, $number); // number of units the defender has lost
+                if (rand(0,2) == 1) {
+                    $atk = rand(0, $newTile['units']); // number of units the attacker has lost
+                } else {
+                    $atk = rand(0, floor($newTile['units']/3));
+                }
+
+                if (rand(0,1) == 1) {
+                    $def = rand(0, $number); // number of units the defender has lost
+                } else {
+                    $def = rand(0, floor($number/3));
+                }
+
                 echo $atk.",".$def.",".$tile['units'].",".$newTile['units'];
                 $tile['units'] -= $atk;
                 $newTile['units'] -= $def;
