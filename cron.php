@@ -40,7 +40,7 @@
         } else {
 
             if ($buildingData['attribute'] == "unit") {
-                if ($pl['pop'] > $buildingData['depositValue']) {
+                if ($pl['pop'] >= $buildingData['depositValue'] && $row['units'] <= 100) {
                     build($pdo, $row['buildingType'], $row['username'], $row['id'], "", $buildingData['depositValue']);
                     $sql = "UPDATE player SET pop-=".$buildingData['depositValue']." WHERE username='".$pl['username']."';";
                     $stmt = $pdo->prepare($sql);
