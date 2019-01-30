@@ -128,12 +128,12 @@
                         echo "true";
                     }
                 }
+
             } else {
                 if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
                     build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
-                    
 
-                    $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
+                    $stmt = $pdo->prepare("UPDATE player SET gold=".($pl['gold']-$row['goldCost']).", wood=".($pl['wood']-$row['woodCost']).", stone=".($pl['stone']-$row['stoneCost'])." WHERE username='".$pl['username']."';");
                     $stmt->execute();
                     echo "true";
                 }
@@ -183,6 +183,7 @@
                     $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
                     $stmt->execute();
                 } else { // this is a battle
+
                     if (rand(0,2) == 1) {
                         $atk = rand(0, $newTile['units']); // number of units the attacker has lost
                     } else {
@@ -210,10 +211,6 @@
                         $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
                         $stmt->execute();
                     }
-
-                    
-
-
                 
                 }
             }
