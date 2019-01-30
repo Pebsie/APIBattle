@@ -73,7 +73,7 @@
             $row['pop']-= abs($newFood);
             $newFood = 0;
         }
-        $newGold = floor($row['gold']+$row['pop']*0.2);
+        $newGold = floor($row['gold']+$row['pop']);
 
         $sql = "UPDATE player SET pop=".$row['pop'].", food=".$newFood.", gold=".$newGold." WHERE username='".$row['username']."';";
         $stmt = $pdo->prepare($sql);

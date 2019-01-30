@@ -155,17 +155,17 @@
         $stmt->execute();
         $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$newTile['buildingType']."'");
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$newTile["buildingType"]."'");
         $stmt->execute();
         $newTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$tile['buildingType']."'");
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$tile["buildingType"]."'");
         $stmt->execute();
         $curTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $number = $_GET['number'];
 
-        if ($newTileBuilding['impassable'] == "false" && $curTileBuilding['impassable'] == "false") { // You cannot move tiles from or onto walls
+        if ($newTileBuilding['impassable'] == "false" && $curTileBuilding['impassable'] == "false") { // You cannot move tiles from or onto 
 
             if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
