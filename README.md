@@ -81,7 +81,7 @@ Many buildings require other buildings existing in order to begin construction. 
 You need to have 1 unit on a tile to claim it and once claimed cannot move that 1 unit off until it is attacked. All tiles owned by "Mother Nature" are fair game. Owning a building type will grant you its benefits even if you weren't the one to build it. For example: Forests generate wood, Mines generate stone. These natural resources exist to be claimed and fought over!
 
 #### Managing population
-Units only generate on unit building types if a player has the `pop` to generate them. Each time a unit is created `pop` is reduced by 1, so you _need_ to have a strong and stable population in order to maintain any kind of military force.
+Units only generate on unit building types if a player has the `pop` to generate them. Each time a unit is created `pop` is reduced by 1, so you _need_ to have a strong and stable population in order to maintain any kind of military force. If 100 or more units are on a tile then that tile won't generate new units.
 
 Population also generate Gold via taxes. Right now the tax rate is hardcoded at 20%. This means that, for example, if you have a population of 100 they'll generate 20 Gold per cycle. This number is always rounded down to the nearest integer.
 
