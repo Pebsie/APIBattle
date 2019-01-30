@@ -10,6 +10,8 @@
 
         if (rand(1,10) == 1) {
             build($pdo, "Forest", "Mother Nature", $i, NULL, 0);
+        } elseif (rand(1,500) == 1)  {
+            build($pdo, "Skeleton", "Dark World", $i, NULL, rand(100,350));
         } elseif (rand(1,250) == 1) {
             build($pdo, "Mine", "Mother Nature", $i, NULL, 0);
         }

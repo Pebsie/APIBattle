@@ -130,7 +130,12 @@
                 }
             } else {
                 if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
-                    build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    if ($_GET['type'] == "Wall") {
+                        build($pdo, "Building", "Time", $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    } else {
+                        build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    }
+
                     $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
                     $stmt->execute();
                     echo "true";
