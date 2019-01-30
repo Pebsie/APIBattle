@@ -176,6 +176,9 @@
 
                     $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
                     $stmt->execute();
+
+                    $stmt = $pdo->prepare("UPDATE player SET gold=".($pl['gold']+1)." WHERE username='".$pl['username']."';");
+                    $stmt->execute();
                 } elseif ($newTile['username'] == $tile['username']) {
                     $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                     $stmt->execute();
