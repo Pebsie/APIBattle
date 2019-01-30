@@ -130,11 +130,8 @@
                 }
             } else {
                 if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
-                    if ($_GET['type'] == "Wall") {
-                        build($pdo, "Building", "Time", $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
-                    } else {
-                        build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
-                    }
+                    build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
+                    
 
                     $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
                     $stmt->execute();
@@ -158,58 +155,69 @@
         $stmt->execute();
         $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$newTile['buildingType']."'");
+        $stmt->execute();
+        $newTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$tile['buildingType']."'");
+        $stmt->execute();
+        $curTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
+
         $number = $_GET['number'];
 
-        if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
+        if ($newTileBuilding['impassable'] == "false" && $curTileBuilding['impassable'] == "false") { // You cannot move tiles from or onto walls
 
-        if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
-            if ($newTile['username'] == "Mother Nature") {
-                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
-                $stmt->execute();
+            if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
-                $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
-                $stmt->execute();
-            } elseif ($newTile['username'] == $tile['username']) {
-                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
-                $stmt->execute();
-        
-                $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
-                $stmt->execute();
-            } else { // this is a battle
-                if (rand(0,2) == 1) {
-                    $atk = rand(0, $newTile['units']); // number of units the attacker has lost
-                } else {
-                    $atk = rand(0, floor($newTile['units']/3));
-                }
-
-                if (rand(0,1) == 1) {
-                    $def = rand(0, $number); // number of units the defender has lost
-                } else {
-                    $def = rand(0, floor($number/3));
-                }
-
-                echo $atk.",".$def.",".$tile['units'].",".$newTile['units'];
-                $tile['units'] -= $atk;
-                $newTile['units'] -= $def;
-                
-
-                $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
-                $stmt->execute();
-
-                if ($newTile['units'] < 0) {
-                    $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+            if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
+                if ($newTile['username'] == "Mother Nature") {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                     $stmt->execute();
-                } else {
-                    $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+
+                    $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
                     $stmt->execute();
-                }
-
-                
-
-
+                } elseif ($newTile['username'] == $tile['username']) {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                    $stmt->execute();
             
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
+                    $stmt->execute();
+                } else { // this is a battle
+                    if (rand(0,2) == 1) {
+                        $atk = rand(0, $newTile['units']); // number of units the attacker has lost
+                    } else {
+                        $atk = rand(0, floor($newTile['units']/3));
+                    }
+
+                    if (rand(0,1) == 1) {
+                        $def = rand(0, $number); // number of units the defender has lost
+                    } else {
+                        $def = rand(0, floor($number/3));
+                    }
+
+                    echo $atk.",".$def.",".$tile['units'].",".$newTile['units'];
+                    $tile['units'] -= $atk;
+                    $newTile['units'] -= $def;
+                    
+
+                    $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
+                    $stmt->execute();
+
+                    if ($newTile['units'] < 0) {
+                        $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+                        $stmt->execute();
+                    } else {
+                        $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+                        $stmt->execute();
+                    }
+
+                    
+
+
+                
+                }
             }
-        }
+        } 
 
     } elseif ($a == "login") {
 

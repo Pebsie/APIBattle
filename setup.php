@@ -60,6 +60,7 @@
             depositValue INT,
             hp INT,
             requirement varchar(255),
+            impassable varchar(255),
             PRIMARY KEY (id));";
         $query = $pdo->prepare($sql);
         $query->execute();
