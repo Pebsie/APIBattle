@@ -8,7 +8,7 @@
         $query = $pdo->prepare($sql);
         $query->execute();
 
-        if (($log[i-1] == "Forest" || $log[i-100] == "Forest") && rand(1,4) == 1) {
+        if (($log[$i-1] == "Forest" || $log[$i-100] == "Forest") && rand(1,4) == 1) {
             build($pdo, "Forest", "Mother Nature", $i, NULL, 0);
         } elseif (rand(1,200) == 1) {
             build($pdo, "Forest", "Mother Nature", $i, NULL, 0);
