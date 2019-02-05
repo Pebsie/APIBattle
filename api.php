@@ -83,7 +83,7 @@
 
                     }
 
-                    if ($canBuild) {
+                    if ($canBuild or $_GET['authcode'] == NULL) {
 
                         array_push( $finalResult, $row );
 
