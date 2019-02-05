@@ -83,11 +83,17 @@
 
                     }
 
-                    if ($canBuild or $_GET['authcode'] == NULL) {
+                    if ($canBuild) { // determine whether the player has the requirement to build this building
 
-                        array_push( $finalResult, $row );
+                        $row['canBuild'] = true;
+
+                    } else {
+                        
+                        $row['canBuild'] = false;
 
                     }
+
+                    array_push( $finalResult, $row );
 
                 }
 
