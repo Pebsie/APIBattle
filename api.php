@@ -35,9 +35,9 @@
         $scope = $_GET['scope'];
         $type = $_GET['type'];
         if ($scope == "world") {
-            /** @api {GET} /api.php?a=get&scope=world Retrieve an array of information on every tile in the world.
+            /** @api {GET} /api.php?a=get&scope=world Retrieve an array of information on every tile in the world
             * @apiName getWorld
-            * @apiGroup user
+            * @apiGroup Retrieval
             * @apiVersion 0.1.0
             * @apiSuccess {Number} id The position in the world of the tile.
             * @apiSuccess {String} buildingType The type of building on this tile.
@@ -76,8 +76,34 @@
             $pl = $statement->fetch(PDO::FETCH_ASSOC);
             
             if ($type == "data") {
+                /** @api {GET} /api.php?a=get&scope=player&type=data Retrieve an array of information on every tile in the world
+                * @apiName getWorld
+                * @apiGroup Retrieval
+                * @apiVersion 0.1.0
+                * @apiSuccess {Number} id The position in the world of the tile.
+                * @apiSuccess {String} buildingType The type of building on this tile.
+                * @apiSuccess {Number} units The number of units on this tile.
+                * @apiSuccess {String} username The username of the player who owns this tile. Mother Nature is the default name for all unclaimed tiles.
+                * @apiSuccess {String} special Special properties of this tile, separated by a comma.
+                * @apiSuccessExample Example singular output element in JSON array:
+                * {
+                *   "id":"1",
+                *   "buildingType":"Grass",
+                *   "units":"0",
+                *   "username":"Mother Nature",
+                *   "special":""
+                * }
+                * @apiSuccessExample Example singular output element of a Barrcks currently being built with 3 minutes remaining in JSON array:
+                * {
+                *   "id":"421",
+                *   "buildingType":"Building",
+                *   "units":"4",
+                *   "username":"Player1",
+                *   "special":"3,Barracks"
+                * }
+                */
 
-                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+                $statement = $pdo->prepare("SELECT username, gold, wood, stone, modifier, pop, food FROM player WHERE authcode='".$authcode."';");
                 $statement->execute();
                 $results = $statement->fetch(PDO::FETCH_ASSOC);
                 echo json_encode($results);
