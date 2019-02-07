@@ -1,0 +1,8 @@
+{
+	"name": "APIBattle Documentation",
+	"version": "1.1",
+	"description": "An RTS interacted with entirely through a RESTful API",
+	"template": {
+		"forceLanguage": "en"
+	}
+}
