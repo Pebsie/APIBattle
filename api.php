@@ -285,9 +285,10 @@
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (password_verify($_GET['password'], $result['password'])) {
-            echo $result['authcode'];
+            echo json_encode($result);
         } else {
-            echo "false";
+            
+            echo '{"status":"failed","reason":"The username or password was wrong!"}'; 
         }
 
     } elseif ($a == "register") {
@@ -305,7 +306,12 @@
             $sql = "INSERT INTO player (username, password, authcode, gold, wood, stone, modifier, pop, food) VALUES ('".$username."', '".$password."', '".$authcode."', 10,20,20,1,4,50);";
             $query = $pdo->prepare($sql);
             $result = $query->execute();
-            echo $authcode;
+            
+            $stmt = $pdo->prepare("SELECT * FROM player WHERE username='".$username."'");
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            echo json_encode($result);
 
-        } else { echo "false"; }
+        } else { echo '{"status":"failed","reason":"A user already exists with this username!"}'; }
     }
