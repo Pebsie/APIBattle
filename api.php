@@ -34,8 +34,34 @@
     if ($a == "get") {
         $scope = $_GET['scope'];
         $type = $_GET['type'];
-
         if ($scope == "world") {
+            /** @api {GET} /api.php?a=get&scope=world Retrieve an array of information on every tile in the world
+            * @apiName getWorld
+            * @apiGroup Retrieval
+            * @apiVersion 0.1.0
+            * @apiSuccess {Number} id The position in the world of the tile.
+            * @apiSuccess {String} buildingType The type of building on this tile.
+            * @apiSuccess {Number} units The number of units on this tile.
+            * @apiSuccess {String} username The username of the player who owns this tile. Mother Nature is the default name for all unclaimed tiles.
+            * @apiSuccess {String} special Special properties of this tile, separated by a comma.
+            * @apiSuccessExample Example singular output element in JSON array:
+            * {
+            *   "id":"1",
+            *   "buildingType":"Grass",
+            *   "units":"0",
+            *   "username":"Mother Nature",
+            *   "special":""
+            * }
+            * @apiSuccessExample Example singular output element of a Barrcks currently being built with 3 minutes remaining in JSON array:
+            * {
+            *   "id":"421",
+            *   "buildingType":"Building",
+            *   "units":"4",
+            *   "username":"Player1",
+            *   "special":"3,Barracks"
+            * }
+            */
+
 
             $statement = $pdo->prepare("SELECT * FROM world");
             $statement->execute();
@@ -50,8 +76,34 @@
             $pl = $statement->fetch(PDO::FETCH_ASSOC);
             
             if ($type == "data") {
+                /** @api {GET} /api.php?a=get&scope=player&type=data Retrieve an array of information on every tile in the world
+                * @apiName getWorld
+                * @apiGroup Retrieval
+                * @apiVersion 0.1.0
+                * @apiSuccess {Number} id The position in the world of the tile.
+                * @apiSuccess {String} buildingType The type of building on this tile.
+                * @apiSuccess {Number} units The number of units on this tile.
+                * @apiSuccess {String} username The username of the player who owns this tile. Mother Nature is the default name for all unclaimed tiles.
+                * @apiSuccess {String} special Special properties of this tile, separated by a comma.
+                * @apiSuccessExample Example singular output element in JSON array:
+                * {
+                *   "id":"1",
+                *   "buildingType":"Grass",
+                *   "units":"0",
+                *   "username":"Mother Nature",
+                *   "special":""
+                * }
+                * @apiSuccessExample Example singular output element of a Barrcks currently being built with 3 minutes remaining in JSON array:
+                * {
+                *   "id":"421",
+                *   "buildingType":"Building",
+                *   "units":"4",
+                *   "username":"Player1",
+                *   "special":"3,Barracks"
+                * }
+                */
 
-                $statement = $pdo->prepare("SELECT * FROM player WHERE authcode='".$authcode."';");
+                $statement = $pdo->prepare("SELECT username, gold, wood, stone, modifier, pop, food FROM player WHERE authcode='".$authcode."';");
                 $statement->execute();
                 $results = $statement->fetch(PDO::FETCH_ASSOC);
                 echo json_encode($results);
@@ -83,11 +135,17 @@
 
                     }
 
-                    if ($canBuild) {
+                    if ($canBuild) { // determine whether the player has the requirement to build this building
 
-                        array_push( $finalResult, $row );
+                        $row['canBuild'] = true;
+
+                    } else {
+                        
+                        $row['canBuild'] = false;
 
                     }
+
+                    array_push( $finalResult, $row );
 
                 }
 
@@ -128,10 +186,12 @@
                         echo "true";
                     }
                 }
+
             } else {
                 if ($tile['buildingType'] == "Grass" && $tile['username'] == $pl['username'] && $pl['gold'] >= $row['goldCost'] && $pl['wood'] >= $row['woodCost'] && $pl['stone'] >= $row['stoneCost']) {
                     build($pdo, "Building", $pl['username'], $_GET['position'], $row['timeToBuild'].",".$_GET['type'], 1);
-                    $stmt = $pdo->prepare("UPDATE player SET gold-=".$row['goldCost'].", wood-=".$row['woodCost'].", stone-=".$row['stoneCost']." WHERE username='".$pl['username']."';");
+
+                    $stmt = $pdo->prepare("UPDATE player SET gold=".($pl['gold']-$row['goldCost']).", wood=".($pl['wood']-$row['woodCost']).", stone=".($pl['stone']-$row['stoneCost'])." WHERE username='".$pl['username']."';");
                     $stmt->execute();
                     echo "true";
                 }
@@ -153,42 +213,69 @@
         $stmt->execute();
         $newTile = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$newTile["buildingType"]."'");
+        $stmt->execute();
+        $newTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM buildings WHERE buildingType='".$tile["buildingType"]."'");
+        $stmt->execute();
+        $curTileBuilding = $stmt->fetch(PDO::FETCH_ASSOC);
+
         $number = $_GET['number'];
-        echo $number;
-        if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
-        if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
-            if ($newTile['username'] == "Mother Nature") {
-                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
-                $stmt->execute();
+        if ($newTileBuilding['impassable'] == "false" && $curTileBuilding['impassable'] == "false") { // You cannot move tiles from or onto 
 
-                $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
-                $stmt->execute();
-            } elseif ($newTile['username'] == $tile['username']) {
-                $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
-                $stmt->execute();
-        
-                $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
-                $stmt->execute();
-            } else { // this is a battle
-                $atk = rand(1, $newTile['units']);
-                $def = rand(1, $tile['units']);
-                $tile['units'] -= $atk;
-                $newTile['units'] -= $def;
-                echo $atk.",".$def;
+            if ($number >= $tile['units']) { $number = $tile['units'] - 1; }
 
-                $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
-                $stmt->execute();
-
-                if ($newTile['units'] < 0) {
-                    $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+            if ($tile['username'] == $pl['username'] && $tile['units'] > 1) {
+                if ($newTile['username'] == "Mother Nature") {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
                     $stmt->execute();
-                } else {
-                    $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+
+                    $stmt = $pdo->prepare("UPDATE world SET username='".$pl['username']."', units=".$number." WHERE id=".$newTile['id']);
                     $stmt->execute();
-                }            
+
+                    $stmt = $pdo->prepare("UPDATE player SET gold=".($pl['gold']+1)." WHERE username='".$pl['username']."';");
+                    $stmt->execute();
+                } elseif ($newTile['username'] == $tile['username']) {
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($tile['units']-$number)." WHERE id=".$tile['id']);
+                    $stmt->execute();
+            
+                    $stmt = $pdo->prepare("UPDATE world SET units=".($number+$newTile['units'])." WHERE id=".$newTile['id']);
+                    $stmt->execute();
+                } else { // this is a battle
+
+                    if (rand(0,2) == 1) {
+                        $atk = rand(0, $newTile['units']); // number of units the attacker has lost
+                    } else {
+                        $atk = rand(0, floor($newTile['units']/3));
+                    }
+
+                    if (rand(0,1) == 1) {
+                        $def = rand(0, $number); // number of units the defender has lost
+                    } else {
+                        $def = rand(0, floor($number/3));
+                    }
+
+                    echo $atk.",".$def.",".$tile['units'].",".$newTile['units'];
+                    $tile['units'] -= $atk;
+                    $newTile['units'] -= $def;
+                    
+
+                    $stmt = $pdo->prepare("UPDATE world SET units=".$tile['units']." WHERE id=".$tile['id']);
+                    $stmt->execute();
+
+                    if ($newTile['units'] < 0) {
+                        $stmt = $pdo->prepare("UPDATE world SET units=0, username='Mother Nature' WHERE id=".$newTile['id']);
+                        $stmt->execute();
+                    } else {
+                        $stmt = $pdo->prepare("UPDATE world SET units=".$newTile['units']." WHERE id=".$newTile['id']);
+                        $stmt->execute();
+                    }
+                
+                }
             }
-        }
+        } 
 
     } elseif ($a == "login") {
 

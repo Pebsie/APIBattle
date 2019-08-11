@@ -40,14 +40,15 @@
         } else {
 
             if ($buildingData['attribute'] == "unit") {
-                if ($pl['pop'] > $buildingData['depositValue']) {
+                if ($pl['pop'] >= $buildingData['depositValue'] && $row['units'] <= 50) {
                     build($pdo, $row['buildingType'], $row['username'], $row['id'], "", $buildingData['depositValue']);
                     $sql = "UPDATE player SET pop-=".$buildingData['depositValue']." WHERE username='".$pl['username']."';";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                 }
             } else {
-                $sql = "UPDATE player SET ".$buildingData['attribute']."+=".$buildingData['depositValue']." WHERE username='".$row['username']."';";
+                $sql = "UPDATE player SET ".$buildingData['attribute']."=".($pl[$buildingData['attribute']]+$buildingData['depositValue'])." WHERE username='".$row['username']."';";
+                echo $sql;
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
             }
@@ -72,7 +73,7 @@
             $row['pop']-= abs($newFood);
             $newFood = 0;
         }
-        $newGold = floor($row['gold']+$row['pop']*0.2);
+        $newGold = floor($row['gold']+$row['pop']);
 
         $sql = "UPDATE player SET pop=".$row['pop'].", food=".$newFood.", gold=".$newGold." WHERE username='".$row['username']."';";
         $stmt = $pdo->prepare($sql);
